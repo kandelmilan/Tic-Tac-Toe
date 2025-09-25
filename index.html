@@ -17,70 +17,89 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      color: #333;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
     }
 
     .game-container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 25px;
+      border-radius: 24px;
+      box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.3);
       text-align: center;
       width: 90%;
-      max-width: 400px;
-      position: relative;
+      max-width: 420px;
+      backdrop-filter: blur(10px);
     }
 
     h1 {
       margin-bottom: 20px;
-      color: #444;
+      font-size: 2.2rem;
+      color: #ffdf6c;
+      text-shadow: 0px 2px 8px rgba(0,0,0,0.3);
     }
 
     .board {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .cell {
-      width: 100px;
-      height: 100px;
-      background: #f8f9fa;
-      border-radius: 12px;
+      width: 110px;
+      height: 110px;
+      background: linear-gradient(135deg, #ffffff, #e4e9f7);
+      border-radius: 16px;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: bold;
+      color: #333;
       cursor: pointer;
-      transition: transform 0.2s ease, background 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
 
     .cell:hover {
-      background: #e9ecef;
-      transform: scale(1.05);
+      transform: scale(1.1) rotate(-2deg);
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+    }
+
+    .cell.win {
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+      color: #fff;
+      animation: glow 1s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #43e97b; }
+      to   { box-shadow: 0 0 25px #38f9d7; }
     }
 
     .status {
-      margin: 20px 0;
-      font-size: 1.2rem;
+      margin: 15px 0;
+      font-size: 1.3rem;
       font-weight: 600;
+      color: #ffdf6c;
     }
 
     button {
-      background: #4facfe;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 12px 25px;
       font-size: 1rem;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
     }
 
     button:hover {
-      background: #00c6fb;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
     /* Popup Modal */
@@ -105,11 +124,11 @@
     }
 
     .popup-content {
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+      padding: 35px;
+      border-radius: 20px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       animation: popIn 0.4s ease;
     }
 
@@ -127,19 +146,19 @@
     .popup h2 {
       font-size: 2rem;
       margin-bottom: 15px;
-      color: #4facfe;
+      color: #ff4b2b;
     }
 
     .popup p {
-      font-size: 1.2rem;
-      margin-bottom: 10px;
+      font-size: 1.1rem;
+      color: #333;
     }
 
     @media (max-width: 500px) {
       .cell {
-        width: 80px;
-        height: 80px;
-        font-size: 2rem;
+        width: 90px;
+        height: 90px;
+        font-size: 2.2rem;
       }
     }
   </style>
@@ -205,16 +224,19 @@
 
     function checkResult() {
       let roundWon = false;
+      let winningCombo = [];
 
       for (let condition of winningConditions) {
         const [a, b, c] = condition;
         if (board[a] && board[a] === board[b] && board[a] === board[c]) {
           roundWon = true;
+          winningCombo = [a, b, c];
           break;
         }
       }
 
       if (roundWon) {
+        winningCombo.forEach(i => cells[i].classList.add("win"));
         showPopup(`🎉 Player ${currentPlayer} Wins!`);
         gameActive = false;
         return;
@@ -235,7 +257,10 @@
       board = ["", "", "", "", "", "", "", "", ""];
       gameActive = true;
       statusText.textContent = "Player X's turn";
-      cells.forEach((cell) => (cell.textContent = ""));
+      cells.forEach((cell) => {
+        cell.textContent = "";
+        cell.classList.remove("win");
+      });
     }
 
     function showPopup(message) {
@@ -245,7 +270,7 @@
       setTimeout(() => {
         popup.classList.remove("show");
         resetGame();
-      }, 2000); // Auto close & reset after 2 seconds
+      }, 2500);
     }
 
     cells.forEach((cell) => cell.addEventListener("click", handleCellClick));

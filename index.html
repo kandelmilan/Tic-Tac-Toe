@@ -28,22 +28,37 @@
       box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.3);
       text-align: center;
       width: 90%;
-      max-width: 420px;
+      max-width: 450px;
       backdrop-filter: blur(10px);
     }
 
     h1 {
-      margin-bottom: 20px;
-      font-size: 2.2rem;
+      margin-bottom: 15px;
+      font-size: 2.3rem;
       color: #ffdf6c;
       text-shadow: 0px 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .score {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 14px;
+      border-radius: 12px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     }
 
     .board {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     .cell {
@@ -80,17 +95,29 @@
     }
 
     .status {
-      margin: 15px 0;
+      margin: 12px 0;
       font-size: 1.3rem;
       font-weight: 600;
       color: #ffdf6c;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
     }
 
     button {
       background: linear-gradient(135deg, #ff758c, #ff7eb3);
       color: white;
       border: none;
-      padding: 12px 25px;
+      padding: 12px 20px;
       font-size: 1rem;
       border-radius: 10px;
       cursor: pointer;
@@ -166,6 +193,14 @@
 <body>
   <div class="game-container">
     <h1>Tic-Tac-Toe</h1>
+    
+    <!-- Scoreboard -->
+    <div class="scoreboard">
+      <div class="score">X Wins: <span id="xWins">0</span></div>
+      <div class="score">O Wins: <span id="oWins">0</span></div>
+      <div class="score">Draws: <span id="draws">0</span></div>
+    </div>
+
     <div class="board" id="board">
       <div class="cell" data-index="0"></div>
       <div class="cell" data-index="1"></div>
@@ -177,8 +212,13 @@
       <div class="cell" data-index="7"></div>
       <div class="cell" data-index="8"></div>
     </div>
+    
     <div class="status" id="status">Player X's turn</div>
-    <button id="resetBtn">Restart Game</button>
+    
+    <div class="buttons">
+      <button id="resetBtn">Restart Game</button>
+      <button id="resetAllBtn">Reset All</button>
+    </div>
   </div>
 
   <!-- Popup -->
@@ -193,12 +233,19 @@
     const cells = document.querySelectorAll(".cell");
     const statusText = document.getElementById("status");
     const resetBtn = document.getElementById("resetBtn");
+    const resetAllBtn = document.getElementById("resetAllBtn");
     const popup = document.getElementById("popup");
     const popupMessage = document.getElementById("popupMessage");
 
     let currentPlayer = "X";
     let board = ["", "", "", "", "", "", "", "", ""];
     let gameActive = true;
+
+    let xWins = 0, oWins = 0, draws = 0;
+
+    const xWinsEl = document.getElementById("xWins");
+    const oWinsEl = document.getElementById("oWins");
+    const drawsEl = document.getElementById("draws");
 
     const winningConditions = [
       [0, 1, 2],
@@ -237,12 +284,17 @@
 
       if (roundWon) {
         winningCombo.forEach(i => cells[i].classList.add("win"));
+        if (currentPlayer === "X") xWins++;
+        else oWins++;
+        updateScore();
         showPopup(`🎉 Player ${currentPlayer} Wins!`);
         gameActive = false;
         return;
       }
 
       if (!board.includes("")) {
+        draws++;
+        updateScore();
         showPopup("😮 It's a Draw!");
         gameActive = false;
         return;
@@ -250,6 +302,12 @@
 
       currentPlayer = currentPlayer === "X" ? "O" : "X";
       statusText.textContent = `Player ${currentPlayer}'s turn`;
+    }
+
+    function updateScore() {
+      xWinsEl.textContent = xWins;
+      oWinsEl.textContent = oWins;
+      drawsEl.textContent = draws;
     }
 
     function resetGame() {
@@ -261,6 +319,12 @@
         cell.textContent = "";
         cell.classList.remove("win");
       });
+    }
+
+    function resetAll() {
+      xWins = 0; oWins = 0; draws = 0;
+      updateScore();
+      resetGame();
     }
 
     function showPopup(message) {
@@ -275,6 +339,7 @@
 
     cells.forEach((cell) => cell.addEventListener("click", handleCellClick));
     resetBtn.addEventListener("click", resetGame);
+    resetAllBtn.addEventListener("click", resetAll);
   </script>
 </body>
 </html>

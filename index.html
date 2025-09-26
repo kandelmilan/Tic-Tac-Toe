@@ -6,74 +6,131 @@
   <title>Tic Tac Toe</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Poppins", sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      background: linear-gradient(135deg, #43cea2, #185a9d);
       margin: 0;
+      color: #fff;
     }
+
     .container {
       text-align: center;
+      max-width: 400px;
+      width: 100%;
     }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    }
+
     .board {
       display: grid;
       grid-template-columns: repeat(3, 100px);
-      gap: 10px;
+      gap: 12px;
       margin: 20px auto;
     }
+
     .cell {
       width: 100px;
       height: 100px;
-      background: white;
+      background: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 2rem;
+      font-size: 2.5rem;
       font-weight: bold;
       cursor: pointer;
       border-radius: 12px;
-      transition: 0.3s;
+      transition: transform 0.3s, background 0.3s;
+      color: #185a9d;
     }
+
     .cell:hover {
-      background: #f0f0f0;
+      background: #f1f1f1;
+      transform: scale(1.1);
     }
+
     .popup {
       display: none;
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      background: #fff;
+      padding: 30px 50px;
+      border-radius: 15px;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.3);
       text-align: center;
+      animation: fadeIn 0.4s ease-in-out;
     }
+
+    .popup h2 {
+      color: #185a9d;
+      margin-bottom: 15px;
+    }
+
     .popup button {
       margin-top: 15px;
       padding: 10px 20px;
       border: none;
-      background: #66a6ff;
+      background: #185a9d;
       color: white;
       font-size: 1rem;
       border-radius: 8px;
       cursor: pointer;
+      transition: 0.3s;
     }
+
+    .popup button:hover {
+      background: #43cea2;
+      transform: scale(1.05);
+    }
+
     input {
-      padding: 8px;
+      padding: 10px;
       margin: 5px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-    #startBtn {
-      padding: 8px 15px;
+      border-radius: 8px;
       border: none;
-      background: #28a745;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    #startBtn {
+      padding: 10px 20px;
+      border: none;
+      background: #43cea2;
       color: white;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    #startBtn:hover {
+      background: #185a9d;
+    }
+
+    #turn {
+      font-size: 1.2rem;
+      margin-top: 15px;
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
     }
   </style>
 </head>
@@ -85,7 +142,12 @@
       <input type="text" id="player2" placeholder="Enter Player 2 Name">
       <button id="startBtn">Start Game</button>
     </div>
+
     <p id="turn"></p>
+    <div class="scoreboard" id="scoreboard" style="display:none;">
+      <div id="p1Score">Player 1: 0</div>
+      <div id="p2Score">Player 2: 0</div>
+    </div>
     <div class="board" id="board"></div>
   </div>
 
@@ -99,12 +161,16 @@
     const popup = document.getElementById("popup");
     const winnerText = document.getElementById("winnerText");
     const turnDisplay = document.getElementById("turn");
+    const scoreboard = document.getElementById("scoreboard");
+    const p1ScoreDisplay = document.getElementById("p1Score");
+    const p2ScoreDisplay = document.getElementById("p2Score");
 
     let currentPlayer = "X";
     let cells = [];
     let gameActive = false;
     let player1Name = "Player 1";
     let player2Name = "Player 2";
+    let scores = { X: 0, O: 0 };
 
     document.getElementById("startBtn").addEventListener("click", () => {
       const p1 = document.getElementById("player1").value.trim();
@@ -113,6 +179,7 @@
       if (p2) player2Name = p2;
 
       document.getElementById("playerInput").style.display = "none";
+      scoreboard.style.display = "flex";
       startGame();
     });
 
@@ -139,13 +206,20 @@
       cell.textContent = currentPlayer;
 
       if (checkWinner()) {
+        if (currentPlayer === "X") {
+          scores.X++;
+          p1ScoreDisplay.textContent = `${player1Name}: ${scores.X}`;
+        } else {
+          scores.O++;
+          p2ScoreDisplay.textContent = `${player2Name}: ${scores.O}`;
+        }
         showWinner(currentPlayer === "X" ? player1Name : player2Name);
       } else if (!cells.includes("")) {
         showWinner("It's a Draw");
       } else {
         currentPlayer = currentPlayer === "X" ? "O" : "X";
-        turnDisplay.textContent = currentPlayer === "X" 
-          ? `${player1Name}'s Turn (X)` 
+        turnDisplay.textContent = currentPlayer === "X"
+          ? `${player1Name}'s Turn (X)`
           : `${player2Name}'s Turn (O)`;
       }
     }

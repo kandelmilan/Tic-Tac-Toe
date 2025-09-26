@@ -11,48 +11,66 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: linear-gradient(135deg, #43cea2, #185a9d);
+      background: linear-gradient(135deg, #141e30, #243b55);
       margin: 0;
       color: #fff;
     }
 
     .container {
       text-align: center;
-      max-width: 400px;
+      max-width: 450px;
       width: 100%;
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: #00f7ff;
+      text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff;
     }
 
     .board {
       display: grid;
-      grid-template-columns: repeat(3, 100px);
+      grid-template-columns: repeat(3, 120px);
       gap: 12px;
       margin: 20px auto;
     }
 
     .cell {
-      width: 100px;
-      height: 100px;
-      background: #fff;
+      width: 120px;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.1);
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: bold;
       cursor: pointer;
-      border-radius: 12px;
+      border-radius: 15px;
       transition: transform 0.3s, background 0.3s;
-      color: #185a9d;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.3);
     }
 
     .cell:hover {
-      background: #f1f1f1;
+      background: rgba(255, 255, 255, 0.2);
       transform: scale(1.1);
+    }
+
+    .cell.X {
+      color: #ff4b5c;
+      animation: popIn 0.3s ease-in-out;
+      text-shadow: 0 0 10px #ff4b5c, 0 0 20px #ff4b5c;
+    }
+
+    .cell.O {
+      color: #00f7ff;
+      animation: popIn 0.3s ease-in-out;
+      text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     .popup {
@@ -61,34 +79,36 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: #fff;
+      background: #1c1c1c;
       padding: 30px 50px;
       border-radius: 15px;
-      box-shadow: 0 4px 25px rgba(0,0,0,0.3);
+      box-shadow: 0 0 20px #00f7ff, 0 0 40px #00f7ff;
       text-align: center;
       animation: fadeIn 0.4s ease-in-out;
     }
 
     .popup h2 {
-      color: #185a9d;
+      color: #fff;
       margin-bottom: 15px;
+      text-shadow: 0 0 10px #ff4b5c, 0 0 20px #ff4b5c;
     }
 
-    .popup button {
+    .popup button, #restartBtn, #startBtn {
       margin-top: 15px;
       padding: 10px 20px;
       border: none;
-      background: #185a9d;
+      background: linear-gradient(45deg, #ff4b5c, #ff9068);
       color: white;
       font-size: 1rem;
       border-radius: 8px;
       cursor: pointer;
       transition: 0.3s;
+      font-weight: bold;
     }
 
-    .popup button:hover {
-      background: #43cea2;
-      transform: scale(1.05);
+    .popup button:hover, #restartBtn:hover, #startBtn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(255,255,255,0.5);
     }
 
     input {
@@ -98,34 +118,31 @@
       border: none;
       outline: none;
       font-size: 1rem;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
     }
 
-    #startBtn {
-      padding: 10px 20px;
-      border: none;
-      background: #43cea2;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    #startBtn:hover {
-      background: #185a9d;
+    input::placeholder {
+      color: #bbb;
     }
 
     #turn {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin-top: 15px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.6);
     }
 
     .scoreboard {
       display: flex;
       justify-content: space-around;
       margin-top: 15px;
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-weight: bold;
+    }
+
+    #restartBtn {
+      display: none;
+      margin-top: 20px;
     }
 
     @keyframes fadeIn {
@@ -149,6 +166,7 @@
       <div id="p2Score">Player 2: 0</div>
     </div>
     <div class="board" id="board"></div>
+    <button id="restartBtn" onclick="restartGame()">🔄 Restart Game</button>
   </div>
 
   <div class="popup" id="popup">
@@ -164,6 +182,7 @@
     const scoreboard = document.getElementById("scoreboard");
     const p1ScoreDisplay = document.getElementById("p1Score");
     const p2ScoreDisplay = document.getElementById("p2Score");
+    const restartBtn = document.getElementById("restartBtn");
 
     let currentPlayer = "X";
     let cells = [];
@@ -180,6 +199,7 @@
 
       document.getElementById("playerInput").style.display = "none";
       scoreboard.style.display = "flex";
+      restartBtn.style.display = "inline-block";
       startGame();
     });
 
@@ -193,17 +213,17 @@
       for (let i = 0; i < 9; i++) {
         const cell = document.createElement("div");
         cell.classList.add("cell");
-        cell.addEventListener("click", () => handleClick(i));
+        cell.addEventListener("click", () => handleClick(i, cell));
         board.appendChild(cell);
       }
     }
 
-    function handleClick(index) {
+    function handleClick(index, cell) {
       if (!gameActive || cells[index] !== "") return;
 
-      const cell = board.children[index];
       cells[index] = currentPlayer;
       cell.textContent = currentPlayer;
+      cell.classList.add(currentPlayer);
 
       if (checkWinner()) {
         if (currentPlayer === "X") {

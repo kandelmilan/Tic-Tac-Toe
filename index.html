@@ -133,7 +133,7 @@
     <h1>Tic Tac Toe</h1>
     <p id="turn"></p>
     <div class="board" id="board"></div>
-    <button id="restartBtn" onclick="restartGame()">🔄 Restart</button>
+    <button id="restartBtn" onclick="restartGame()">Restart</button>
   </div>
 
   <div class="popup" id="popup">
@@ -174,9 +174,9 @@
       cell.classList.add(currentPlayer);
 
       if (checkWinner()) {
-        showWinner("Player " + currentPlayer + " Wins! 🎉");
+        showWinner("Player " + currentPlayer + " Wins! ");
       } else if (!cells.includes("")) {
-        showWinner("It's a Draw 🤝");
+        showWinner("It's a Draw ");
       } else {
         currentPlayer = currentPlayer === "X" ? "O" : "X";
         turnDisplay.textContent = "Turn: Player " + currentPlayer;

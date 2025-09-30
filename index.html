@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tic Tac Toe</title>
   <style>
     body {
@@ -11,66 +11,73 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: linear-gradient(135deg, #141e30, #243b55);
+      background: linear-gradient(135deg, #0a1931, #1e3d59);
       margin: 0;
       color: #fff;
     }
 
     .container {
       text-align: center;
-      max-width: 450px;
+      max-width: 400px;
       width: 100%;
     }
 
     h1 {
-      font-size: 3rem;
-      margin-bottom: 15px;
-      color: #00f7ff;
-      text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff;
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      color: #00d9ff;
+      text-shadow: 0 0 10px #00d9ff, 0 0 20px #00d9ff;
     }
 
     .board {
       display: grid;
-      grid-template-columns: repeat(3, 120px);
-      gap: 12px;
+      grid-template-columns: repeat(3, 110px);
+      gap: 10px;
       margin: 20px auto;
     }
 
     .cell {
-      width: 120px;
-      height: 120px;
-      background: rgba(255, 255, 255, 0.1);
+      width: 110px;
+      height: 110px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 3rem;
+      font-size: 2.5rem;
       font-weight: bold;
       cursor: pointer;
-      border-radius: 15px;
-      transition: transform 0.3s, background 0.3s;
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.3);
+      transition: transform 0.25s ease, background 0.25s ease;
+      box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.2);
     }
 
     .cell:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(1.08);
     }
 
     .cell.X {
       color: #ff4b5c;
-      animation: popIn 0.3s ease-in-out;
       text-shadow: 0 0 10px #ff4b5c, 0 0 20px #ff4b5c;
+      animation: pop 0.3s ease;
     }
 
     .cell.O {
-      color: #00f7ff;
-      animation: popIn 0.3s ease-in-out;
-      text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff;
+      color: #00d9ff;
+      text-shadow: 0 0 10px #00d9ff, 0 0 20px #00d9ff;
+      animation: pop 0.3s ease;
     }
 
-    @keyframes popIn {
-      from { transform: scale(0); opacity: 0; }
+    @keyframes pop {
+      from { transform: scale(0.5); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
+    }
+
+    #turn {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      color: #eee;
+      text-shadow: 0 0 6px rgba(255,255,255,0.6);
     }
 
     .popup {
@@ -79,70 +86,40 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: #1c1c1c;
-      padding: 30px 50px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #00f7ff, 0 0 40px #00f7ff;
+      background: #102542;
+      padding: 25px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00d9ff, 0 0 35px #00d9ff;
       text-align: center;
-      animation: fadeIn 0.4s ease-in-out;
+      animation: fadeIn 0.3s ease;
     }
 
     .popup h2 {
-      color: #fff;
       margin-bottom: 15px;
-      text-shadow: 0 0 10px #ff4b5c, 0 0 20px #ff4b5c;
-    }
-
-    .popup button, #restartBtn, #startBtn {
-      margin-top: 15px;
-      padding: 10px 20px;
-      border: none;
-      background: linear-gradient(45deg, #ff4b5c, #ff9068);
-      color: white;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-      font-weight: bold;
-    }
-
-    .popup button:hover, #restartBtn:hover, #startBtn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 15px rgba(255,255,255,0.5);
-    }
-
-    input {
-      padding: 10px;
-      margin: 5px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      font-size: 1rem;
-      background: rgba(255,255,255,0.1);
       color: #fff;
     }
 
-    input::placeholder {
-      color: #bbb;
-    }
-
-    #turn {
-      font-size: 1.3rem;
-      margin-top: 15px;
-      text-shadow: 0 0 10px rgba(255,255,255,0.6);
-    }
-
-    .scoreboard {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 15px;
-      font-size: 1.1rem;
+    .popup button, #restartBtn {
+      margin-top: 10px;
+      padding: 10px 22px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
       font-weight: bold;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(45deg, #0077b6, #00d9ff);
+      transition: 0.25s;
+    }
+
+    .popup button:hover, #restartBtn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(0,217,255,0.6);
     }
 
     #restartBtn {
-      display: none;
-      margin-top: 20px;
+      display: block;
+      margin: 15px auto 0;
     }
 
     @keyframes fadeIn {
@@ -154,19 +131,9 @@
 <body>
   <div class="container">
     <h1>Tic Tac Toe</h1>
-    <div id="playerInput">
-      <input type="text" id="player1" placeholder="Enter Player 1 Name">
-      <input type="text" id="player2" placeholder="Enter Player 2 Name">
-      <button id="startBtn">Start Game</button>
-    </div>
-
     <p id="turn"></p>
-    <div class="scoreboard" id="scoreboard" style="display:none;">
-      <div id="p1Score">Player 1: 0</div>
-      <div id="p2Score">Player 2: 0</div>
-    </div>
     <div class="board" id="board"></div>
-    <button id="restartBtn" onclick="restartGame()">🔄 Restart Game</button>
+    <button id="restartBtn" onclick="restartGame()">🔄 Restart</button>
   </div>
 
   <div class="popup" id="popup">
@@ -179,34 +146,15 @@
     const popup = document.getElementById("popup");
     const winnerText = document.getElementById("winnerText");
     const turnDisplay = document.getElementById("turn");
-    const scoreboard = document.getElementById("scoreboard");
-    const p1ScoreDisplay = document.getElementById("p1Score");
-    const p2ScoreDisplay = document.getElementById("p2Score");
-    const restartBtn = document.getElementById("restartBtn");
 
     let currentPlayer = "X";
     let cells = [];
-    let gameActive = false;
-    let player1Name = "Player 1";
-    let player2Name = "Player 2";
-    let scores = { X: 0, O: 0 };
-
-    document.getElementById("startBtn").addEventListener("click", () => {
-      const p1 = document.getElementById("player1").value.trim();
-      const p2 = document.getElementById("player2").value.trim();
-      if (p1) player1Name = p1;
-      if (p2) player2Name = p2;
-
-      document.getElementById("playerInput").style.display = "none";
-      scoreboard.style.display = "flex";
-      restartBtn.style.display = "inline-block";
-      startGame();
-    });
+    let gameActive = true;
 
     function startGame() {
       gameActive = true;
       currentPlayer = "X";
-      turnDisplay.textContent = `${player1Name}'s Turn (X)`;
+      turnDisplay.textContent = "Turn: Player " + currentPlayer;
       board.innerHTML = "";
       cells = Array(9).fill("");
 
@@ -226,21 +174,12 @@
       cell.classList.add(currentPlayer);
 
       if (checkWinner()) {
-        if (currentPlayer === "X") {
-          scores.X++;
-          p1ScoreDisplay.textContent = `${player1Name}: ${scores.X}`;
-        } else {
-          scores.O++;
-          p2ScoreDisplay.textContent = `${player2Name}: ${scores.O}`;
-        }
-        showWinner(currentPlayer === "X" ? player1Name : player2Name);
+        showWinner("Player " + currentPlayer + " Wins! 🎉");
       } else if (!cells.includes("")) {
-        showWinner("It's a Draw");
+        showWinner("It's a Draw 🤝");
       } else {
         currentPlayer = currentPlayer === "X" ? "O" : "X";
-        turnDisplay.textContent = currentPlayer === "X"
-          ? `${player1Name}'s Turn (X)`
-          : `${player2Name}'s Turn (O)`;
+        turnDisplay.textContent = "Turn: Player " + currentPlayer;
       }
     }
 
@@ -255,16 +194,18 @@
       );
     }
 
-    function showWinner(winner) {
+    function showWinner(msg) {
       gameActive = false;
       popup.style.display = "block";
-      winnerText.textContent = winner === "It's a Draw" ? winner : `${winner} Wins! 🎉`;
+      winnerText.textContent = msg;
     }
 
     function restartGame() {
       popup.style.display = "none";
       startGame();
     }
+
+    startGame();
   </script>
 </body>
 </html>
